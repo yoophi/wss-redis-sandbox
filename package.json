@@ -1,0 +1,19 @@
+{
+  "name": "wss-redis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Pyunghyuk Yoo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "opts": "^2.0.2",
+    "redis": "^4.5.1",
+    "ws": "^8.11.0"
+  }
+}

@@ -1,0 +1,13 @@
+session_name: 3-panes
+windows:
+  - window_name: dev window
+    layout: tiled
+    # shell_command_before:
+    #   - cd ~/
+    panes:
+      - node app.js -p 8001
+      - node app.js -p 8002
+      - node app.js -p 8003
+      - wscat -c ws://localhost:8001
+      - wscat -c ws://localhost:8002
+      - wscat -c ws://localhost:8003

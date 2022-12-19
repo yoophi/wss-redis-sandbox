@@ -10,6 +10,7 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const webSocket = require("./socket");
+var cors = require("cors");
 
 opts.parse([
   {
@@ -27,6 +28,7 @@ opts.parse([
 
 const app = express();
 app.set("port", opts.get("port") || 8000);
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());

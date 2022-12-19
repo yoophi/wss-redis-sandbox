@@ -1,12 +1,22 @@
 const WebSocket = require("ws");
 // const util = require("util");
 
-module.exports = (server, subscriber, publisher) => {
+module.exports = async (server, subscriber, publisher) => {
   const wss = new WebSocket.Server({ server });
-  subscriber.subscribe("chat");
-  subscriber.on("message", function (channel, message) {
+
+  wss.broadcast = function broadcast(msg) {
+    console.log(msg);
+    wss.clients.forEach(function each(client) {
+      client.send(msg);
+    });
+  };
+
+  await Promise.all([publisher.connect(), subscriber.connect()]);
+
+  subscriber.subscribe("chat", function (message) {
     // util.puts(message);
-    console.log(`message: message`);
+    console.log({ arguments });
+    console.log(`message: ${message}`);
     wss.broadcast(message);
   });
   wss.on("connection", (ws, req) => {
@@ -14,10 +24,12 @@ module.exports = (server, subscriber, publisher) => {
     console.log("client connected: " + ws.id);
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log("새로운 클라이언트 접속", ip);
-    ws.on("message", (message) => {
+    ws.on("message", async (message) => {
       // 클라이언트로부터 메시지 수신 시
-      publisher.publish("chat", message);
-      console.log(message);
+      //   await publisher.publish("chat", message);
+      console.log("ws.on message", message);
+      console.log("ws.on message", message.toString());
+      await publisher.publish("chat", message.toString());
     });
     ws.on("error", (err) => {
       // 에러 발생 시
@@ -26,7 +38,7 @@ module.exports = (server, subscriber, publisher) => {
     ws.on("close", () => {
       // 연결 종료 시
       console.log("클라이언트 접속 해제", ip);
-      util.puts("client disconnected: " + ws.id);
+      console.log("client disconnected: " + ws.id);
       clearInterval(ws.interval);
     });
 

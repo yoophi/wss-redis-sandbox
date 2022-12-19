@@ -12,7 +12,7 @@ const morgan = require("morgan");
 const webSocket = require("./socket");
 const { Queue } = require("bullmq");
 var cors = require("cors");
-const queue = new Queue("my-queue");
+const generateImageSetQueue = new Queue("generate-image-set");
 
 opts.parse([
   {
@@ -37,7 +37,7 @@ app.use(express.json());
 
 app.post("/job", (req, res) => {
   console.log("POST /job");
-  queue.add("my-queue", { color: "blue" });
+  generateImageSetQueue.add("generate-image-set", { size: 20 });
   // queue.close();
 
   res.send({ ok: true });

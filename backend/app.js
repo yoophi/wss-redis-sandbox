@@ -10,7 +10,9 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const webSocket = require("./socket");
+const { Queue } = require("bullmq");
 var cors = require("cors");
+const queue = new Queue("my-queue");
 
 opts.parse([
   {
@@ -32,6 +34,14 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+
+app.post("/job", (req, res) => {
+  console.log("POST /job");
+  queue.add("my-queue", { color: "blue" });
+  // queue.close();
+
+  res.send({ ok: true });
+});
 
 app.use("/", (req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
